@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  *
@@ -64,28 +65,38 @@ public class Trabajador implements Resultados {
 
     }
 
+    
+    public void datosTrabajador() {
+        Scanner input = new Scanner(System.in);
+        System.out.println("____TRABAJADOR:____");
+        
+        System.out.println("NUMERO DE CONTROL:");
+        numControl=input.nextDouble();
+        System.out.println("NOMBRE:");
+        nombre =input.next();
+        System.out.println("APELLIDO:");
+        apellido = input.next();
+      
+    }
+
     public void addTrabajador(String ruta, String fileName) throws IOException {
         File file = new File(ruta + fileName);
 
-        FileWriter fileWriter = new FileWriter(file);
-        BufferedWriter bufWriter = new BufferedWriter(fileWriter);
-
-        for (Trabajador trabajador : traba) {
-            bufWriter.write("Numero de Control: "+","+trabajador.getNumControl()+ ","+"Nombre: "+trabajador.getNombre() +","+ "Apellido: " + trabajador.getApellido());
-
+        try (FileWriter fileWriter = new FileWriter(file); BufferedWriter bufWriter = new BufferedWriter(fileWriter)) {
+            
+            for (Trabajador trabajador : traba) {
+       bufWriter.write("DATOS DEL TRABAJADOR");
+        bufWriter.write("\nNúmero de Control: " + getNumControl());
+        bufWriter.write("\nNombre:            " + getNombre());
+        bufWriter.write("\nApellido:          " + getApellido());
+            }
+            
         }
-
-        bufWriter.close();
-        fileWriter.close();
     }
 
     @Override
     public void imprimirResultados() {
-        System.out.println("DATOS DEL TRABAJADOR ");
-        System.out.println("Número de Control: " + getNumControl());
-        System.out.println("Nombre: " + getNombre());
-        System.out.println("Apellido: " + getApellido());
-
+        datosTrabajador();
     }
-
+    
 }

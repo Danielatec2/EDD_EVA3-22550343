@@ -14,22 +14,30 @@ public class EVA2_PROYECTO_BANA_BEARD {
 
     /**
      * @param args the command line arguments
+     * @throws java.io.IOException
      */
     public static void main(String[] args) throws IOException {
         // TODO code application logic here
        String ruta = "C:\\Empresa\\";
        String fileName = "Trabajadores.txt";
-       Empresa empresa1=new Empresa("Cars j", "Chih");
+       
+       Empresa empresa1=new Empresa();
        empresa1.imprimirResultados();
-       Trabajador trabajador1= new Trabajador(22550343, "Angel", "Montez");
-       trabajador1.saveTrabajador(trabajador1);
-       trabajador1.addTrabajador(ruta, fileName);
-       Proveedores prov1= new Proveedores(500, 350, "SODAS");//Solo recibe la Mercancia
-       prov1.saveProveedor(prov1);
-       prov1.losProveedores(ruta, "Proveedores.txt");
-       trabajador1.imprimirResultados();
-       Producto producto = new Producto();// CLASIFICACIÓN DE LOS PRODUCTOS
-       producto.imprimirResultados();
+       empresa1.saveEmpresa(empresa1);
+       empresa1.addEmpresa(ruta, "Datos_Empresa.txt");
+       
+       Trabajador trabajador= new Trabajador();
+      trabajador.imprimirResultados();
+      trabajador.saveTrabajador(trabajador);
+      trabajador.addTrabajador(ruta, "Datos_Trabajador.txt");
+      
+      Producto producto = new Producto();
+      producto.imprimirResultados();
+      producto.contarDesechosInorganicos();
+       
+     
+      
+       
        
        
        

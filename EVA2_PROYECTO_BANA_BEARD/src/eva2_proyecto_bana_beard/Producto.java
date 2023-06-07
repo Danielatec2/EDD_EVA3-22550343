@@ -3,106 +3,162 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package eva2_proyecto_bana_beard;
-
+import java.awt.BorderLayout;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author danii
  */
-public class Producto extends Proveedores implements Resultados {
-
+public class  Producto extends Inventario implements Resultados {
+    private String nombre;
+    private double precio;
+    private double cantidad;
     private boolean tipoDeAlimento;
-    int orga = 0;
-    int in = 0;
-    int pla=0,vid=0,alu=0;
-    List<Producto> product = new ArrayList<>();
-    public Producto() {
-        this.tipoDeAlimento = false;
+    
+    public Producto(){
+        this.nombre="";
+        this.precio=0;
+        this.cantidad=0;
+        this.tipoDeAlimento=false;
     }
-
-    public Producto(boolean tipoDeAlimento, double cantidad, double precio, String nomproducto) {
-        super(cantidad, precio, nomproducto);
+    public Producto(String nombre, double precio, double cantidad, boolean tipoDeAlimento) {
+        this.nombre = nombre;
+        this.precio = precio;
+        this.cantidad = cantidad;
         this.tipoDeAlimento = tipoDeAlimento;
     }
+    
+    public String getNombre() {
+        return nombre;
+    }
+    
+    public double getPrecio() {
+        return precio;
+    }
+    
+    public double getCantidad() {
+        return cantidad;
+    }
+    
     public boolean isTipoDeAlimento() {
-       
-        
         return tipoDeAlimento;
     }
     
-
-    public void setTipoDeAlimento(boolean tipoDeAlimento) {
-        this.tipoDeAlimento = tipoDeAlimento;
-    }
-    public void saveAlimento(Producto producto){
-        product.add(producto);
-        
-    }
-    public void ListaAlimento(String ruta ,String fileName) throws IOException{
-         File file = new File(ruta + fileName);
-
-        try (FileWriter fileWriter = new FileWriter(file)) {
-            BufferedWriter bufWriter = new BufferedWriter(fileWriter);
-            
-            for (Proveedores proveedores : prove) {
-                
-             bufWriter.write("Nombre Producto:"+proveedores.getNomproducto()+","+"Precio: "+proveedores.getPrecio()+","+"Cantidad: ");
-
-            }
-            
-            bufWriter.close();
-        }
-    }
-   public void clasificacion_Alimento() {
+ public void clasificacionAlimento() throws IOException {
         Scanner input = new Scanner(System.in);
+        boolean salir = false;
 
-        System.out.println("Nombre del producto: ");
-        nomproducto = input.next();
-        System.out.println("Precio del producto: ");
-        precio = input.nextDouble();
-        System.out.println("Ingrese la cantidad de productos(Por unidad): ");
-        cantidad = input.nextDouble();
-        System.out.println("Ingresa el tipo de desecho Organico is a false, Inorganico is a true ");
-        tipoDeAlimento = input.nextBoolean();// nos permite capturar*/
-        if (tipoDeAlimento == false) {
-            //int orga=0;
-            orga++;
+        while (!salir) {
+            System.out.println("\n_____PRODUCTO_____");
+            System.out.println("   === MENU ===");
+            System.out.println("1. Agregar producto");
+            System.out.println("2. Eliminar producto");
+            System.out.println("3. Buscar producto");
+            System.out.println("4. Mostrar inventario");
+            System.out.println("5. Guardar inventario");
+            System.out.println("6. Salir");
+            System.out.print("Ingrese la opcion deseada: ");
 
-        } else {
-            //int in=0;
-            in++;
-           int claIno=0;
-            System.out.println("Que tipo de desecho INORGANICO ES: "+ "\n1)Plastico"+"\n2)Vidrio"+"\n3)Aluminio");
-            claIno = input.nextInt();
-            switch(claIno){
+            int opcion = input.nextInt();
+            input.nextLine(); // Limpiar el buffer de entrada
+
+            switch (opcion) {
                 case 1:
-                    pla++;
+                    System.out.println("\n____INFORMACION DEL PRODUCTO____");
+                    System.out.println("Nombre del producto: ");
+                    String nombreProducto = input.nextLine();
+                    System.out.println("Precio del producto: ");
+                    double precio = input.nextDouble();
+                    System.out.println("Cantidad del producto: ");
+                    double cantidad = input.nextDouble();
+                    System.out.println("Tipo de alimento (1 = Inorganico, 0 = Organico): ");
+                    int tipo = input.nextInt();
+                    boolean tipoDeAlimento = tipo == 1;
+
+                    agregarProducto(nombreProducto, precio, cantidad, tipoDeAlimento);
                     break;
                 case 2:
-                    vid++;
+                    System.out.println("Nombre del producto a eliminar: ");
+                    String productoEliminar = input.nextLine();
+                    eliminarProducto(productoEliminar);
+                    break;
                 case 3:
-                    alu++;
+                    System.out.println("Nombre del producto a buscar: ");
+                    String productoBuscar = input.nextLine();
+                    buscarProducto(productoBuscar);
+                    break;
+                case 4:
+                    mostrarInventario();
+                    break;
+                case 5:
+                    guardarInventario();
+                    break;
+                case 6:
+                    salir = true;
+                    System.out.println("FINALIZADO!!!");
+                    break;
+                default:
+                    System.out.println("Opcion invalida. Intente nuevamente.");
+                    break;
             }
         }
-        System.out.println("LA CANTIDAD DE DESECHOS ORGANICOS SON: " + (orga * cantidad));
-        System.out.println("LA CANTIDAD DE DESECHOS INORGANICOS SON: " +( in * cantidad) +"\n Y ESTOS SE PUEDEN RECICLAR: ");
-
     }
- 
+     public int contarDesechosOrganicos() {
+        int totalOrganicos = 0;
+        for (Producto producto : productos) {
+            if (!producto.isTipoDeAlimento()) {
+                totalOrganicos += producto.getCantidad();
+            }
+        }
+        return totalOrganicos;
+    }
+
+    public int contarDesechosInorganicos() {
+        int totalInorganicos = 0;
+        for (Producto producto : productos) {
+            if (producto.isTipoDeAlimento()) {
+                totalInorganicos += producto.getCantidad();
+            }
+        }
+        return totalInorganicos;
+    }
+      public double calcularGananciaDesechos() {
+        double gananciaTotal = 0;
+        for (Producto producto : productos) {
+            if (producto.isTipoDeAlimento()) {
+                gananciaTotal += producto.getCantidad() * producto.getPrecio();
+            }
+        }
+        return gananciaTotal;
+    }
+      
     @Override
     public void imprimirResultados() {
-        
-        clasificacion_Alimento();
-        
-       
-
+        try {
+            clasificacionAlimento();
+        } catch (IOException ex) {
+            Logger.getLogger(Producto.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        System.out.println("\nCONTEO DE DESECHOS");
+        System.out.println("Cantidad de desechos organicos: " + contarDesechosOrganicos());
+        System.out.println("Cantidad de desechos inorganicos: " + contarDesechosInorganicos());
+        System.out.println("Ganancia de los desechos inorganicos: " + calcularGananciaDesechos());
     }
-
 }
+
+    
+
+
+ 
+    
